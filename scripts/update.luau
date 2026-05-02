@@ -2,7 +2,7 @@ local cf = require("./cloudflare")
 
 local cname = require("../cname")
 local success, oldCname = pcall(function()
-	return require("../cname-old") :: cname.Entries
+	return require("../cname-old") :: cname.Entries?
 end)
 
 if not success then

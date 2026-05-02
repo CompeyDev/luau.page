@@ -1,3 +1,6 @@
+export type Entry = { content: string, proxied: boolean? } | string
+export type Entries = { [string]: Entry }
+
 return {
 	-- ["project"] = "user.github.io", (project.luau.page CNAME record for user.github.io/project)
 	[""] = "nicell.github.io",
@@ -11,4 +14,4 @@ return {
 	["sentry"] = "grilme99.github.io",
 	["typeforge"] = "typeforge-luau.github.io",
 	["ui-labs"] = "pepeeltoro41.github.io",
-}
+} :: Entries

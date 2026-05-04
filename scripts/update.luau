@@ -10,20 +10,35 @@ if not success then
 	oldCname = {}
 end
 
+local function intoEntry(content: string | cname.Entry): cname.Entry
+	if typeof(content) == "string" then
+		-- unstructured CNAME content, always proxied
+		return { content = content, proxied = true }
+	end
+
+	if content.proxied == nil then
+		-- proxied might not be set, default to true
+		content.proxied = true
+	end
+
+	-- structured entry
+	return content
+end
+
 local delete = table.clone(oldCname)
 local add = {}
 local update = {}
 
 for name, content in cname do
-  local entry = if typeof(content) == "string" then { content = content, proxied = true } else content
+	local entry = intoEntry(content)
 
-  if oldCname[name] == nil then
+	if oldCname[name] == nil then
 		add[name] = entry -- net new
 	else
 		delete[name] = nil -- exists in new, not deleted
-		
-    local oldEntry = oldCname[name]
-    if oldEntry.content ~= entry.content or oldEntry.proxied ~= entry.proxied then
+
+		local oldEntry = intoEntry(oldCname[name])
+		if oldEntry.content ~= entry.content or oldEntry.proxied ~= entry.proxied then
 			update[name] = entry -- entry changed
 		end
 	end

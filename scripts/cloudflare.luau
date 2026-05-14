@@ -51,16 +51,16 @@ local function getRecord(name: string): Record?
 	error(`Failed to get record for {name}: {errors[1].message}`)
 end
 
-local function addRecord(name: string, content: string)
+local function addRecord(name: string, content: string, proxy: boolean)
 	table.insert(batch.posts, {
 		type = "CNAME",
 		name = qualifiedName(name),
 		content = content,
-		proxied = true,
+		proxied = proxy,
 	})
 end
 
-local function updateRecord(name: string, content: string)
+local function updateRecord(name: string, content: string, proxy: boolean)
 	local record = getRecord(name)
 	if record == nil then
 		print("Record not found for", name)
@@ -71,7 +71,7 @@ local function updateRecord(name: string, content: string)
 		type = "CNAME",
 		name = qualifiedName(name),
 		content = content,
-		proxied = true,
+		proxied = proxy,
 	})
 end
 

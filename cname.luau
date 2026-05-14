@@ -4,6 +4,11 @@ export type Entries = { [string]: Entry | string }
 local cname: Entries = {
 	-- ["project"] = "user.github.io", (project.luau.page CNAME record for user.github.io/project)
 	[""] = "nicell.github.io",
+	["_acme-challenge.discord"] = {
+    content = "3f40ea0a64b37d2b233b05cbb98b7861._acme.deno.net.",
+    proxied = false
+  },
+	["discord"] = "alias.deno.net",
 	["hermes"] = "froststarinteractive.github.io",
 	["lightborn"] = "lightborn-lua.github.io",
 	["lynx"] = "lynx-luau.pages.dev",

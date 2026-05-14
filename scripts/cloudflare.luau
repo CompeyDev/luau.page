@@ -81,7 +81,7 @@ local function deleteRecord(name: string)
 		print("Record not found for", name)
 		return
 	end
-	table.insert(batch.deletes, record.id)
+	table.insert(batch.deletes, { id = record.id })
 end
 
 local function sendBatch()

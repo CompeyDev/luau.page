@@ -2,7 +2,7 @@ local cf = require("./cloudflare")
 
 local cname = require("../cname")
 local success, oldCname = pcall(function()
-	return require("../cname-old")
+	return require("../cname-old") :: cname.Entries
 end)
 
 if not success then
@@ -10,29 +10,43 @@ if not success then
 	oldCname = {}
 end
 
+local function intoEntry(content: string | cname.Entry): cname.Entry
+	if typeof(content) == "string" then
+		-- unstructured CNAME content, always proxied
+		return { content = content, proxied = true }
+	end
+
+	-- structured entry
+	return content
+end
+
 local delete = table.clone(oldCname)
 local add = {}
 local update = {}
 
 for name, content in cname do
+	local entry = intoEntry(content)
+
 	if oldCname[name] == nil then
-		add[name] = content -- net new
+		add[name] = entry -- net new
 	else
 		delete[name] = nil -- exists in new, not deleted
-		if oldCname[name] ~= content then
-			update[name] = content -- content changed
+
+		local oldEntry = intoEntry(oldCname[name])
+		if oldEntry.content ~= entry.content or oldEntry.proxied ~= entry.proxied then
+			update[name] = entry -- entry changed
 		end
 	end
 end
 
-for name, content in add do
+for name, entry in add do
 	print("add", name)
-	cf.addRecord(name, content)
+	cf.addRecord(name, entry.content, entry.proxied)
 end
 
-for name, content in update do
+for name, entry in update do
 	print("update", name)
-	cf.updateRecord(name, content)
+	cf.updateRecord(name, entry.content, entry.proxied)
 end
 
 for name, _ in delete do

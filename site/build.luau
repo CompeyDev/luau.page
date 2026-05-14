@@ -1,6 +1,8 @@
-local fs = require("@lute/fs")
+local fs = require("@std/fs")
 local site = require("./")
 
-pcall(fs.mkdir, "dist")
+if not fs.exists("dist") then
+  fs.createDirectory("dist")
+end
 
-fs.writestringtofile("dist/index.html", site())
+fs.writeStringToFile("dist/index.html", site())

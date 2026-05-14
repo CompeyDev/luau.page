@@ -1,6 +1,6 @@
-local process = require("@lute/process")
-local net = require("@lute/net")
-local json = require("./json")
+local process = require("@std/process")
+local net = require("@std/net")
+local json = require("@std/json")
 
 local domain = "luau.page"
 

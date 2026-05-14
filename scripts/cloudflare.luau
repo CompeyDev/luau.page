@@ -36,11 +36,19 @@ local function getRecord(name: string): Record?
 			headers = headers,
 		}
 	)
-	local data = json.deserialize(response.body)
-	if data.success and #data.result > 0 then
-		return data.result[1]
+	local data = json.asObject(json.deserialize(response.body))
+	assert (data, "Expected JSON object in response")
+	if data.success then
+		local result = json.asArray(data.result)
+		assert(result, "Expected result array in response")
+		if #result > 0 then
+			return result[1]
+		end
 	end
-	error(`Failed to get record for {name}: {data.errors[1].message}`)
+	local errors = json.asArray(data.errors)
+	assert(errors, "Expected errors array in response")
+	assert(#errors > 0, "Expected at least one error in errors array")
+	error(`Failed to get record for {name}: {errors[1].message}`)
 end
 
 local function addRecord(name: string, content: string)
@@ -88,10 +96,14 @@ local function sendBatch()
 		body = json.serialize(batch),
 	})
 
-	local data = json.deserialize(res.body)
+	local data = json.asObject(json.deserialize(res.body))
 
-	if not res.ok then
-		for _, error in data.errors do
+	if not res.ok and data then
+		local errors = json.asArray(data.errors)
+		assert(errors, "Expected errors array in response")
+		for _, err in errors do
+			local error = json.asObject(err)
+			assert(error, "Expected error object in errors array")
 			print(`Error: {error.code} - {error.message} {error.documentation_url or ""}`)
 		end
 		error("Failed to send batch request: " .. res.status)

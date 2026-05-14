@@ -1,7 +1,7 @@
-export type Entry = { content: string, proxied: boolean? } | string
-export type Entries = { [string]: Entry }
+export type Entry = { content: string, proxied: boolean }
+export type Entries = { [string]: Entry | string }
 
-return {
+local cname: Entries = {
 	-- ["project"] = "user.github.io", (project.luau.page CNAME record for user.github.io/project)
 	[""] = "nicell.github.io",
 	["hermes"] = "froststarinteractive.github.io",
@@ -14,4 +14,6 @@ return {
 	["sentry"] = "grilme99.github.io",
 	["typeforge"] = "typeforge-luau.github.io",
 	["ui-labs"] = "pepeeltoro41.github.io",
-} :: Entries
+}
+
+return cname

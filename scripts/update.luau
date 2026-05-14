@@ -16,11 +16,6 @@ local function intoEntry(content: string | cname.Entry): cname.Entry
 		return { content = content, proxied = true }
 	end
 
-	if content.proxied == nil then
-		-- proxied might not be set, default to true
-		content.proxied = true
-	end
-
 	-- structured entry
 	return content
 end

@@ -3,6 +3,8 @@ local fs = require("@std/fs")
 local process = require("@std/process")
 local task = require("@std/task")
 
+process.run({ "lute", "site/build.luau" })
+
 local server = net.serve(function()
 	return fs.readFileToString("dist/index.html")
 end)
